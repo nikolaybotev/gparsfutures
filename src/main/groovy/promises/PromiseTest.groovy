@@ -6,9 +6,6 @@ import groovyx.gpars.group.DefaultPGroup
 class PromiseTest {
 
   static main(args) {
-    print "Hello "
-    println "world"
-
     Actor service = new ServiceActor()
     service.setParallelGroup(new DefaultPGroup(1))
     service.start()
