@@ -5,7 +5,7 @@ import groovyx.gpars.actor.Actor
 import groovyx.gpars.actor.DefaultActor
 import groovyx.gpars.dataflow.Promise
 
-class ClientActor extends DefaultActor {
+class ClientActorSendAndContinue extends DefaultActor {
 
   void act() {
     loop {
@@ -13,14 +13,13 @@ class ClientActor extends DefaultActor {
         if (msg instanceof Actor) {
           final Actor other = (Actor) msg
           log("Client enter")
-          Promise future = other.sendAndPromise(10)
-          future.then { x ->
-            // This executes on a separate thread
+          other.sendAndContinue(10, { x ->
+            // This executes on the service actor's thread
             log("Client got future result " + x)
             this.send(x)
             Thread.sleep(1000)
             log("Client future callback done.")
-          }
+          })
           other.send(5)
           log("Client leave")
         } else {
